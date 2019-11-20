@@ -40,7 +40,7 @@ app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json())
 
-app.get('/', waiterRoute.indexRoute)
+app.get('/login', waiterRoute.indexRoute)
 app.post('/login', waiterRoute.loginRoute);
 app.get('/home', waiterRoute.homeRoute);
 app.post('/home', waiterRoute.workdaysRoute);
@@ -48,11 +48,8 @@ app.post('/home', waiterRoute.workdaysRoute);
 app.get('/days', waiterRoute.waiterLog);
 
 app.post('/logout', function (req, res){
-    res.redirect('/');
-})
-
-
-
+    res.redirect('/login');
+});
 
 const PORT = process.env.PORT || 8080;
 
