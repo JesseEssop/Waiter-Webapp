@@ -41,7 +41,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json())
 
 app.get('/', waiterRoute.indexRoute)
-app.post('/', waiterRoute.loginRoute);
+app.post('/login', waiterRoute.loginRoute);
 app.get('/home', waiterRoute.homeRoute);
 app.post('/home', waiterRoute.workdaysRoute);
 
