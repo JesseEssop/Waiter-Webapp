@@ -83,6 +83,7 @@ module.exports = function waiterWork(pool) {
 
         for (var w = 0; w < allwaiters.rows.length; w++) {
             var allWait = allwaiters.rows[w].exists
+            console.log(allWait)
         }
 
         var getWaiter = await pool.query('SELECT MAX(id) FROM waiters')
@@ -110,8 +111,6 @@ module.exports = function waiterWork(pool) {
     function waitingError() {
         return errorMsg
     }
-
-
 
     return {
         waiterName,
