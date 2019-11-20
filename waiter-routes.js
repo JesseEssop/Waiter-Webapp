@@ -21,7 +21,7 @@ module.exports = function WaiterRoute(pool) {
     async function loginRoute(req, res) {
         var user = req.body.username
         console.log(user)
-        waiting.waiterName(user)
+       await waiting.waiterName(user)
 
         res.redirect('/home');
     }
