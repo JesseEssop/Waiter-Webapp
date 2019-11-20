@@ -1,0 +1,39 @@
+<style>
+    table,
+    td,
+    th {
+        border: 1px solid #ddd;
+        text-align: left;
+    }
+
+    table {
+        border-collapse: collapse;
+        width: 25%;
+    }
+
+    th,
+    td {
+        padding: 15px;
+    }
+</style>
+
+<div class="container center">
+    <h1>Waiters Log</h1>
+
+    {{!-- <div class="col-12 center"> --}}
+     <table>
+        <tr>
+            <th>Waiter</th>
+            <th>Days Worked</th>
+        </tr>
+        {{#each workerLog}}
+        <div class="row">
+            <tr>
+                <td>{{waitername}}</td>
+                <td>{{day}}</td>
+            </tr>
+            {{/each}}
+        </div>
+        </tabel>
+        {{!-- </div> --}}
+</div>

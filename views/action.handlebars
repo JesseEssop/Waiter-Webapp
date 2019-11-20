@@ -1,0 +1,92 @@
+
+
+<div class="container center">
+
+        <h1 style="margin-top: 0px;">Welcome, {{username}}</h1>
+        <div>
+        <form action="/logout" method="POST">
+                <button class="button-primary backbtn" value='back' type="submit" name="logout" style="float:right; color:rgb(0, 0, 0)">LOGOUT</button>
+        </form>
+        </div>
+
+        <form action="/home" method="POST">
+                <div class="error">
+                        {{messages.error}}
+                </div>
+
+
+                <h3>Select days to work:</h3>
+                <div class="row col-12">
+                        <ul style="float:left;padding-left: 0px; margin-left: 20px"><label
+                                        style="color:rgb(255, 255, 255); font-size: 17px">Monday<input type="checkbox"
+                                                name="weekdays" value="Monday"><span class="checkmark"></span></label>
+                        </ul>
+                        <ul style="float:left; margin-left: 10px;"><label
+                                        style="color:rgb(255, 255, 255); font-size: 17px">Tuesday<input type="checkbox"
+                                                name="weekdays" value="Tuesday"><span class="checkmark"></span></label>
+                        </ul>
+                        <ul style="float:left; margin-left: 10px;"><label
+                                        style="color:rgb(255, 255, 255); font-size: 17px">Wednesday<input
+                                                type="checkbox" name="weekdays" value="Wednesday"><span
+                                                class="checkmark"></span></label></ul>
+                        <ul style="float:left; margin-left: 10px;"><label
+                                        style="color:rgb(255, 255, 255); font-size: 17px">Thursday<input type="checkbox"
+                                                name="weekdays" value="Thursday"><span class="checkmark"></span></label>
+                        </ul>
+                        <ul style="float:left; margin-left: 10px;"><label
+                                        style="color:rgb(255, 255, 255); font-size: 17px">Friday<input type="checkbox"
+                                                name="weekdays" value="Friday"><span class="checkmark"></span></label>
+                        </ul>
+                        <ul style="float:left; margin-left: 10px;"><label
+                                        style="color:rgb(255, 255, 255); font-size: 17px">Saturday<input type="checkbox"
+                                                name="weekdays" value="Saturday"><span class="checkmark"></span></label>
+                        </ul>
+                        <ul style="float:left; margin-left: 10px;"><label
+                                        style="color:rgb(255, 255, 255); font-size: 17px">Sunday<input type="checkbox"
+                                                name="weekdays" value="Sunday"><span class="checkmark"></span></label>
+                        </ul>
+                        <button class="confirmBtn" type="submit" name="confirm"
+                                style="margin: 15px; color:rgb(0, 0, 0)">CONFIRM</button>
+                </div>
+        </form>
+
+        <div class="row">
+                <div class="center">
+                        <ul style="float:left; width:100px; background:orange; padding-left:0px; margin-left:40px">
+                                <u>Monday</u>
+                                <br>
+                                waiters: {{MON}}
+                        </ul>
+                        <ul style="float:left; width:100px; background:orange; padding-left:0px; margin-left:30px">
+                                <u>Tuesday</u>
+                                <br>
+                                waiters: {{TUES}}
+                        </ul>
+                        <ul style="float:left; width:100px; background:orange; padding-left:0px; margin-left:30px">
+                                <u>Wednesday</u>
+                                <br>
+                                waiters: {{WED}}
+                        </ul>
+                        <ul style="float:left; width:100px; background:orange; padding-left:0px; margin-left:30px">
+                                <u>Thursday</u>
+                                <br>
+                                waiters: {{THURS}}
+                        </ul>
+                        <ul style="float:left; width:100px; background:orange; padding-left:0px; margin-left:30px">
+                                <u>Friday</u>
+                                <br>
+                                waiters: {{FRI}}
+                        </ul>
+                        <ul style="float:left; width:100px; background:orange; padding-left:0px; margin-left:30px">
+                                <u>Saturday</u>
+                                <br>
+                                waiters: {{SAT}}
+                        </ul>
+                        <ul style="float:left; width:100px; background:orange; padding-left:0px; margin-left:30px">
+                                <u>Sunday</u>
+                                <br>
+                                waiters: {{SUN}}
+                        </ul>
+                </div>
+        </div>
+</div>
