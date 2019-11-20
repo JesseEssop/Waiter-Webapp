@@ -18,7 +18,7 @@ const connectionString = process.env.DATABASE_URL || 'postgresql://codex:codex12
 
 const pool = new Pool({
     connectionString,
-    ssl: useSSL
+    // ssl: useSSL
 });
 const waiterRoute = routesFact(pool);
 
