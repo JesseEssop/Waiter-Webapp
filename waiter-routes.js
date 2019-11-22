@@ -20,10 +20,10 @@ module.exports = function WaiterRoute(pool) {
 
     async function loginRoute(req, res) {
         var user = req.body.username
-        console.log(user)
+        // console.log(user)
         await waiting.waiterName(user)
 
-        res.redirect('/home');
+        res.redirect('/waiters');
     }
 
     async function homeRoute(req, res) {
@@ -48,7 +48,7 @@ module.exports = function WaiterRoute(pool) {
         else {
             await waiting.workDays(week);
             workDays = waiting.Ontime()
-            console.log(workDays)
+            // console.log(workDays)
 
             for (var w = 0; w < workDays.length; w++) {
                 var allworkDays = workDays[w];
@@ -57,7 +57,6 @@ module.exports = function WaiterRoute(pool) {
                 req.flash('error', 'SHIFTS FOR SELECTED DAYS ARE FULL, PLEASE SELECT DIFFERENT DAYS')
             }
             else {
-
                 mon = allworkDays.monday
                 tues = allworkDays.tuesday
                 wed = allworkDays.wednesday
@@ -67,12 +66,14 @@ module.exports = function WaiterRoute(pool) {
                 sun = allworkDays.sunday
             }
         }
-        res.redirect('/home')
+        res.redirect('/waiters')
     }
 
     async function waiterLog(req, res) {
+        // console.log(await waiting.orderData());
         res.render('days', {
-            workerLog: await waiting.WaiterDays()
+            workerDays: await waiting.orderData(),
+            level: await waiting.LevelDay()
         });
     }
 

@@ -42,10 +42,10 @@ app.use(bodyParser.json())
 
 app.get('/', waiterRoute.indexRoute)
 app.post('/', waiterRoute.loginRoute);
-app.get('/home', waiterRoute.homeRoute);
-app.post('/home', waiterRoute.workdaysRoute);
+app.get('/waiters', waiterRoute.homeRoute);
+app.post('/waiters', waiterRoute.workdaysRoute);
 
-app.get('/days', waiterRoute.waiterLog);
+app.get('/waiters/:username', waiterRoute.waiterLog);
 
 app.post('/logout', function (req, res){
     res.redirect('/');

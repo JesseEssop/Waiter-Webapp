@@ -3,9 +3,7 @@ module.exports = function waiterWork(pool) {
     var regex = /[0-9$@$!%*?&#^-_. +\[.*?\]]/;
     var newWaiter;
     var loggedIn = '';
-    var allwaiters;
-    var errorMsg;
-    var workId;
+
     var checkWaiter;
 
     var workWeek = [];
@@ -19,13 +17,15 @@ module.exports = function waiterWork(pool) {
     var sunday = 0
 
 
+
     async function waiterName(waiter) {
 
         if (testWaiter(waiter)) {
-            loggedIn = waiter;
+            // allwaiters = await pool.query('SELECT * FROM waiters WHERE waitername = $1')
 
             await pool.query('insert into waiters (waitername) values ($1)', [newWaiter]);
-            allwaiters = await pool.query('SELECT EXISTS(SELECT 1 FROM waiters WHERE waitername = $1)', [newWaiter]);
+            loggedIn = newWaiter;
+
         }
     }
 
@@ -50,24 +50,38 @@ module.exports = function waiterWork(pool) {
         for (var i = 0; i < day.length; i++) {
 
             if (day[i] === 'Monday') {
+                await pool.query('insert into waiters (waitername, day_id) values ($1, $2)', [newWaiter, 1])
+                checkWaiter = await pool.query('SELECT weekdays.days, waiters.waitername FROM weekdays INNER JOIN waiters ON weekdays.id = waiters.day_id WHERE weekdays.id = 1')
                 monday += 1
             }
             if (day[i] === 'Tuesday') {
+                await pool.query('insert into waiters (waitername, day_id) values ($1, $2)', [newWaiter, 2])
+                checkWaiter = await pool.query('SELECT weekdays.days, waiters.waitername FROM weekdays INNER JOIN waiters ON weekdays.id = waiters.day_id WHERE weekdays.id = 2')
                 tuesday += 1
             }
             if (day[i] === 'Wednesday') {
+                await pool.query('insert into waiters (waitername, day_id) values ($1, $2)', [newWaiter, 3])
+                checkWaiter = await pool.query('SELECT weekdays.days, waiters.waitername FROM weekdays INNER JOIN waiters ON weekdays.id = waiters.day_id WHERE weekdays.id = 3')
                 wednesday += 1
             }
             if (day[i] === 'Thursday') {
+                await pool.query('insert into waiters (waitername, day_id) values ($1, $2)', [newWaiter, 4])
+                checkWaiter = await pool.query('SELECT weekdays.days, waiters.waitername FROM weekdays INNER JOIN waiters ON weekdays.id = waiters.day_id WHERE weekdays.id = 4')
                 thursday += 1
             }
             if (day[i] === 'Friday') {
+                await pool.query('insert into waiters (waitername, day_id) values ($1, $2)', [newWaiter, 5])
+                checkWaiter = await pool.query('SELECT weekdays.days, waiters.waitername FROM weekdays INNER JOIN waiters ON weekdays.id = waiters.day_id WHERE weekdays.id = 5')
                 friday += 1
             }
             if (day[i] === 'Saturday') {
+                await pool.query('insert into waiters (waitername, day_id) values ($1, $2)', [newWaiter, 6])
+                checkWaiter = await pool.query('SELECT weekdays.days, waiters.waitername FROM weekdays INNER JOIN waiters ON weekdays.id = waiters.day_id WHERE weekdays.id = 6')
                 saturday += 1
             }
             if (day[i] === 'Sunday') {
+                await pool.query('insert into waiters (waitername, day_id) values ($1, $2)', [newWaiter, 7])
+                checkWaiter = await pool.query('SELECT weekdays.days, waiters.waitername FROM weekdays INNER JOIN waiters ON weekdays.id = waiters.day_id WHERE weekdays.id = 7')
                 sunday += 1
             }
         }
@@ -80,22 +94,6 @@ module.exports = function waiterWork(pool) {
             saturday,
             sunday
         };
-
-        for (var w = 0; w < allwaiters.rows.length; w++) {
-            var allWait = allwaiters.rows[w].exists
-            console.log(allWait)
-        }
-
-        var getWaiter = await pool.query('SELECT MAX(id) FROM waiters')
-
-        for (var z = 0; z < getWaiter.rows.length; z++) {
-            workId = getWaiter.rows[z].max
-        }
-
-        if (allWait === true) {
-            await pool.query('insert into weekdays (day, waiter_id) values ($1,$2)', [day.toString(), workId])
-            checkWaiter = await pool.query('SELECT waiters.waitername, weekdays.day FROM waiters INNER JOIN weekdays ON waiters.id = weekdays.waiter_id WHERE waiters.id = $1', [workId])
-        }
         workWeek.push(workDays);
     }
 
@@ -104,22 +102,46 @@ module.exports = function waiterWork(pool) {
     }
 
     async function WaiterDays() {
-        checkWaiter = await pool.query('SELECT waiters.waitername, weekdays.day FROM waiters INNER JOIN weekdays ON waiters.id = weekdays.waiter_id WHERE waiters.id = $1', [workId])
+        checkWaiter = await pool.query('SELECT weekdays.days, waiters.waitername FROM weekdays INNER JOIN waiters ON weekdays.id = waiters.day_id WHERE weekdays.id = waiters.day_id')
+        // console.log(checkWaiter.rows)
         return checkWaiter.rows
     }
 
-    function waitingError() {
-        return errorMsg
+    async function orderData() {
+        let orderedData = [];
+        let res = await pool.query('SELECT * FROM weekdays');
+        for (const day of res.rows) {
+           let item = { id: day.id, day: day.days, waiters: [] };
+            orderedData.push(item);
+        }
+        let waiters = await pool.query('SELECT * FROM waiters');
+        for (const waiter of waiters.rows) {
+            for (const item of orderedData) {
+                if (waiter.day_id === item.id) {
+                    item.waiters.push(waiter.waitername);
+                } 
+            }
+        }
+        return orderedData;
+    }
+
+    async function LevelDay (){
+        let orderedData = await orderData();
+        // console.log(orderedData[0].waiters)
+        if(orderedData[0].waiters >= 3 ||orderedData[1].waiters >= 3||orderedData[2].waiters >= 3 ||orderedData[3].waiters >= 3||orderedData[4].waiters >= 3||orderedData[5].waiters >= 3||orderedData[6].waiters >= 3){
+            return "danger"
+        }
     }
 
     return {
+        orderData,
         waiterName,
         testWaiter,
         currentWaiter,
         workDays,
         Ontime,
-        waitingError,
-        WaiterDays
+        WaiterDays,
+        LevelDay
 
     }
 }

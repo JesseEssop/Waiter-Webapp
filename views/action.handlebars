@@ -1,17 +1,15 @@
-
-
 <div class="container center">
 
         <h1 style="margin-top: 0px;">Welcome, {{username}}</h1>
         <div>
         <form action="/logout" method="POST">
-                <button class="button-primary backbtn" value='back' type="submit" name="logout" style="float:right; color:rgb(0, 0, 0)">LOGOUT</button>
+        <button class="button-primary backbtn" value='back' type="submit" name="logout" style="float:right; color:rgb(0, 0, 0)">LOGOUT</button>
         </form>
         </div>
 
-        <form action="/home" method="POST">
+        <form action="/waiters" method="POST">
                 <div class="error">
-                        {{messages.error}}
+                 {{messages.error}}
                 </div>
 
 

@@ -21,19 +21,21 @@
     <h1>Waiters Log</h1>
 
     {{!-- <div class="col-12 center"> --}}
-     <table>
+    <table>
         <tr>
-            <th>Waiter</th>
-            <th>Days Worked</th>
-        </tr>
-        {{#each workerLog}}
-        <div class="row">
-            <tr>
-                <td>{{waitername}}</td>
-                <td>{{day}}</td>
-            </tr>
+            {{#each workerDays}}
+            <th style="{{level}}">{{day}}</th>
             {{/each}}
-        </div>
-        </tabel>
-        {{!-- </div> --}}
+        </tr>
+        <tr>
+            {{#each workerDays}}
+            <td class="{{level}}">
+                {{#each waiters}}
+                <span style="padding:0.5em;float:left">{{this}}</span>
+                {{/each}}
+            </td>
+            {{/each}}
+        </tr>
+    </table>
+
 </div>
