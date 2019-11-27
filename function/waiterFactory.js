@@ -16,6 +16,8 @@ module.exports = function waiterWork(pool) {
     var saturday = 0
     var sunday = 0
 
+    var oneWaiter;
+
 
 
     async function waiterName(waiter) {
@@ -46,6 +48,9 @@ module.exports = function waiterWork(pool) {
 
 
     async function workDays(day) {
+        oneWaiter = await pool.query('SELECT * FROM waiters WHERE waitername = $1', [newWaiter]);
+
+
 
         for (var i = 0; i < day.length; i++) {
 
@@ -95,6 +100,7 @@ module.exports = function waiterWork(pool) {
             sunday
         };
         workWeek.push(workDays);
+
     }
 
     function Ontime() {
@@ -111,7 +117,7 @@ module.exports = function waiterWork(pool) {
         let orderedData = [];
         let res = await pool.query('SELECT * FROM weekdays');
         for (const day of res.rows) {
-           let item = { id: day.id, day: day.days, waiters: [] };
+            let item = { id: day.id, day: day.days, waiters: [] };
             orderedData.push(item);
         }
         let waiters = await pool.query('SELECT * FROM waiters');
@@ -119,18 +125,26 @@ module.exports = function waiterWork(pool) {
             for (const item of orderedData) {
                 if (waiter.day_id === item.id) {
                     item.waiters.push(waiter.waitername);
-                } 
+                }
             }
         }
         return orderedData;
     }
 
-    async function LevelDay (){
+    async function LevelDay() {
         let orderedData = await orderData();
         // console.log(orderedData[0].waiters)
-        if(orderedData[0].waiters >= 3 ||orderedData[1].waiters >= 3||orderedData[2].waiters >= 3 ||orderedData[3].waiters >= 3||orderedData[4].waiters >= 3||orderedData[5].waiters >= 3||orderedData[6].waiters >= 3){
+        if (orderedData[0].waiters >= 3 || orderedData[1].waiters >= 3 || orderedData[2].waiters >= 3 || orderedData[3].waiters >= 3 || orderedData[4].waiters >= 3 || orderedData[5].waiters >= 3 || orderedData[6].waiters >= 3) {
             return "danger"
         }
+    }
+    // async function waiterDuplicate() {
+    //     oneWaiter = await pool.query('SELECT * FROM waiters WHERE waitername = $1', [newWaiter]);
+    //     return oneWaiter.rowCount
+    // }
+
+    async function resetWaiters() {
+        await pool.query('delete from waiters');
     }
 
     return {
@@ -141,7 +155,9 @@ module.exports = function waiterWork(pool) {
         workDays,
         Ontime,
         WaiterDays,
-        LevelDay
+        LevelDay,
+        resetWaiters,
+        // waiterDuplicate
 
     }
 }
