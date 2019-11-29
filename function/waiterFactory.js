@@ -18,16 +18,17 @@ module.exports = function waiterWork(pool) {
 
     var oneWaiter;
 
+    var shiftsMap = {}
 
 
     async function waiterName(waiter) {
 
         if (testWaiter(waiter)) {
-            // allwaiters = await pool.query('SELECT * FROM waiters WHERE waitername = $1')
-
-            await pool.query('insert into waiters (waitername) values ($1)', [newWaiter]);
-            loggedIn = newWaiter;
-
+            var allwaiters = await pool.query('SELECT * FROM waiters WHERE waitername = $1', [newWaiter])
+            if (allwaiters.rows.length === 0) {
+                await pool.query('insert into waiters (waitername) values ($1)', [newWaiter]);
+                loggedIn = newWaiter;
+            }
         }
     }
 
@@ -36,9 +37,7 @@ module.exports = function waiterWork(pool) {
     }
 
     function testWaiter(input) {
-
         var wack = regex.test(input);
-
         if (wack !== true) {
             newWaiter = input.toLowerCase();
             newWaiter = newWaiter.charAt(0).toUpperCase() + newWaiter.slice(1);
@@ -46,50 +45,64 @@ module.exports = function waiterWork(pool) {
         return newWaiter
     }
 
+    function shiftMapUpdater(day){
+        if (shiftsMap[newWaiter] === undefined) {
+            shiftsMap[newWaiter] = [day];
+        } else {
+            let list = shiftsMap[newWaiter];
+            list.push(day);
+            shiftsMap[newWaiter] = list;
+        }
+    }
 
     async function workDays(day) {
-        oneWaiter = await pool.query('SELECT * FROM waiters WHERE waitername = $1', [newWaiter]);
-
-
+        oneWaiter = await pool.query('SELECT id FROM waiters WHERE waitername = $1', [newWaiter]);
 
         for (var i = 0; i < day.length; i++) {
-
             if (day[i] === 'Monday') {
-                await pool.query('insert into waiters (waitername, day_id) values ($1, $2)', [newWaiter, 1])
-                checkWaiter = await pool.query('SELECT weekdays.days, waiters.waitername FROM weekdays INNER JOIN waiters ON weekdays.id = waiters.day_id WHERE weekdays.id = 1')
-                monday += 1
+                await pool.query('insert into shifts (waiter_id, day_id) values ($1, $2)', [oneWaiter.rows[0].id, 1])
+                checkWaiter = await pool.query('SELECT weekdays.days, waiters.waitername FROM shifts INNER JOIN weekdays ON weekdays.id = shifts.day_id INNER JOIN waiters ON waiters.id = shifts.waiter_id')
+                monday = 1
+                shiftMapUpdater('Monday');
             }
             if (day[i] === 'Tuesday') {
-                await pool.query('insert into waiters (waitername, day_id) values ($1, $2)', [newWaiter, 2])
-                checkWaiter = await pool.query('SELECT weekdays.days, waiters.waitername FROM weekdays INNER JOIN waiters ON weekdays.id = waiters.day_id WHERE weekdays.id = 2')
-                tuesday += 1
+                await pool.query('insert into shifts (waiter_id, day_id) values ($1, $2)', [oneWaiter.rows[0].id, 2])
+                checkWaiter = await pool.query('SELECT weekdays.days, waiters.waitername FROM shifts INNER JOIN weekdays ON weekdays.id = shifts.day_id INNER JOIN waiters ON waiters.id = shifts.waiter_id')
+                tuesday = 1
+                shiftMapUpdater('Tuesday');
             }
             if (day[i] === 'Wednesday') {
-                await pool.query('insert into waiters (waitername, day_id) values ($1, $2)', [newWaiter, 3])
-                checkWaiter = await pool.query('SELECT weekdays.days, waiters.waitername FROM weekdays INNER JOIN waiters ON weekdays.id = waiters.day_id WHERE weekdays.id = 3')
-                wednesday += 1
+                await pool.query('insert into shifts (waiter_id, day_id) values ($1, $2)', [oneWaiter.rows[0].id, 3])
+                checkWaiter = await pool.query('SELECT weekdays.days, waiters.waitername FROM shifts INNER JOIN weekdays ON weekdays.id = shifts.day_id INNER JOIN waiters ON waiters.id = shifts.waiter_id')
+                wednesday = 1
+                shiftMapUpdater('Wednesday');
             }
             if (day[i] === 'Thursday') {
-                await pool.query('insert into waiters (waitername, day_id) values ($1, $2)', [newWaiter, 4])
-                checkWaiter = await pool.query('SELECT weekdays.days, waiters.waitername FROM weekdays INNER JOIN waiters ON weekdays.id = waiters.day_id WHERE weekdays.id = 4')
-                thursday += 1
+                await pool.query('insert into shifts (waiter_id, day_id) values ($1, $2)', [oneWaiter.rows[0].id, 4])
+                checkWaiter = await pool.query('SELECT weekdays.days, waiters.waitername FROM shifts INNER JOIN weekdays ON weekdays.id = shifts.day_id INNER JOIN waiters ON waiters.id = shifts.waiter_id')
+                thursday = 1
+                shiftMapUpdater('Thursday');
             }
             if (day[i] === 'Friday') {
-                await pool.query('insert into waiters (waitername, day_id) values ($1, $2)', [newWaiter, 5])
-                checkWaiter = await pool.query('SELECT weekdays.days, waiters.waitername FROM weekdays INNER JOIN waiters ON weekdays.id = waiters.day_id WHERE weekdays.id = 5')
-                friday += 1
+                await pool.query('insert into shifts (waiter_id, day_id) values ($1, $2)', [oneWaiter.rows[0].id, 5])
+                checkWaiter = await pool.query('SELECT weekdays.days, waiters.waitername FROM shifts INNER JOIN weekdays ON weekdays.id = shifts.day_id INNER JOIN waiters ON waiters.id = shifts.waiter_id')
+                friday = 1
+                shiftMapUpdater('Friday');
             }
             if (day[i] === 'Saturday') {
-                await pool.query('insert into waiters (waitername, day_id) values ($1, $2)', [newWaiter, 6])
-                checkWaiter = await pool.query('SELECT weekdays.days, waiters.waitername FROM weekdays INNER JOIN waiters ON weekdays.id = waiters.day_id WHERE weekdays.id = 6')
-                saturday += 1
+                await pool.query('insert into shifts (waiter_id, day_id) values ($1, $2)', [oneWaiter.rows[0].id, 6])
+                checkWaiter = await pool.query('SELECT weekdays.days, waiters.waitername FROM shifts INNER JOIN weekdays ON weekdays.id = shifts.day_id INNER JOIN waiters ON waiters.id = shifts.waiter_id')
+                saturday = 1
+                shiftMapUpdater('Saturday');
             }
             if (day[i] === 'Sunday') {
-                await pool.query('insert into waiters (waitername, day_id) values ($1, $2)', [newWaiter, 7])
-                checkWaiter = await pool.query('SELECT weekdays.days, waiters.waitername FROM weekdays INNER JOIN waiters ON weekdays.id = waiters.day_id WHERE weekdays.id = 7')
-                sunday += 1
+                await pool.query('insert into shifts (waiter_id, day_id) values ($1, $2)', [oneWaiter.rows[0].id, 7])
+                checkWaiter = await pool.query('SELECT weekdays.days, waiters.waitername FROM shifts INNER JOIN weekdays ON weekdays.id = shifts.day_id INNER JOIN waiters ON waiters.id = shifts.waiter_id')
+                sunday = 1
+                shiftMapUpdater('Sunday');
             }
         }
+
         const workDays = {
             monday,
             tuesday,
@@ -100,7 +113,6 @@ module.exports = function waiterWork(pool) {
             sunday
         };
         workWeek.push(workDays);
-
     }
 
     function Ontime() {
@@ -108,23 +120,23 @@ module.exports = function waiterWork(pool) {
     }
 
     async function WaiterDays() {
-        checkWaiter = await pool.query('SELECT weekdays.days, waiters.waitername FROM weekdays INNER JOIN waiters ON weekdays.id = waiters.day_id WHERE weekdays.id = waiters.day_id')
-        // console.log(checkWaiter.rows)
+        checkWaiter = await pool.query('SELECT weekdays.days, waiters.waitername FROM shifts INNER JOIN weekdays ON weekdays.id = shifts.day_id INNER JOIN waiters ON waiters.id = shifts.waiter_id')
         return checkWaiter.rows
     }
 
     async function orderData() {
+        let shifts = await WaiterDays();
         let orderedData = [];
         let res = await pool.query('SELECT * FROM weekdays');
         for (const day of res.rows) {
             let item = { id: day.id, day: day.days, waiters: [] };
             orderedData.push(item);
         }
-        let waiters = await pool.query('SELECT * FROM waiters');
-        for (const waiter of waiters.rows) {
+
+        for (const shift of shifts) {
             for (const item of orderedData) {
-                if (waiter.day_id === item.id) {
-                    item.waiters.push(waiter.waitername);
+                if (shift.days === item.day) {
+                    item.waiters.push(shift.waitername);
                 }
             }
         }
@@ -133,18 +145,49 @@ module.exports = function waiterWork(pool) {
 
     async function LevelDay() {
         let orderedData = await orderData();
-        // console.log(orderedData[0].waiters)
-        if (orderedData[0].waiters >= 3 || orderedData[1].waiters >= 3 || orderedData[2].waiters >= 3 || orderedData[3].waiters >= 3 || orderedData[4].waiters >= 3 || orderedData[5].waiters >= 3 || orderedData[6].waiters >= 3) {
+        if (orderedData[0].waiters >= 3) {
+            return "danger"
+        }
+
+        if (orderedData[1].waiters >= 3) {
+            return "danger"
+        }
+
+        if (orderedData[2].waiters >= 3) {
+            return "danger"
+        }
+
+        if (orderedData[3].waiters >= 3) {
+            return "danger"
+        }
+
+        if (orderedData[4].waiters >= 3) {
+            return "danger"
+        }
+
+        if (orderedData[5].waiters >= 3) {
+            return "danger"
+        }
+
+        if (orderedData[6].waiters >= 3) {
             return "danger"
         }
     }
-    // async function waiterDuplicate() {
-    //     oneWaiter = await pool.query('SELECT * FROM waiters WHERE waitername = $1', [newWaiter]);
-    //     return oneWaiter.rowCount
-    // }
+
+    function waiterInfo(username) {
+        let list = shiftsMap[username];
+        return list;
+    };
+
+    async function Alldays() {
+        var everyday = await pool.query('SELECT * FROM weekdays')
+        return everyday.rows
+    }
+
 
     async function resetWaiters() {
-        await pool.query('delete from waiters');
+        await pool.query('delete from shifts');
+        shiftsMap = {};
     }
 
     return {
@@ -157,7 +200,7 @@ module.exports = function waiterWork(pool) {
         WaiterDays,
         LevelDay,
         resetWaiters,
-        // waiterDuplicate
-
+        waiterInfo,
+        Alldays
     }
 }

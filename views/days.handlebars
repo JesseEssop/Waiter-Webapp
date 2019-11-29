@@ -22,14 +22,14 @@
 
     {{!-- <div class="col-12 center"> --}}
     <table>
-        <tr>
+        <tr style="background:orange">
             {{#each workerDays}}
-            <th style="{{level}}">{{day}}</th>
+            <th>{{day}}</th>
             {{/each}}
         </tr>
-        <tr>
+        <tr style="background:orange">
             {{#each workerDays}}
-            <td class="{{level}}">
+            <td>
                 {{#each waiters}}
                 <ul>
                     <span style="padding:0.5em;float:left">{{this}}</span>
@@ -39,5 +39,7 @@
             {{/each}}
         </tr>
     </table>
-
+<form action="/reset" method="POST">
+<button type="submit" style="margin: 15px; color:rgb(0, 0, 0)">Reset Week</button>
+</form>
 </div>

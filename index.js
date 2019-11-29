@@ -5,6 +5,8 @@ const bodyParser = require('body-parser');
 const app = express();
 const session = require('express-session');
 const routesFact = require('./waiter-routes');
+const WaitersFactory = require('./function/waiterFactory');
+const Helpers = require('./waiter-helpers');
 
 const pg = require('pg');
 const Pool = pg.Pool;
@@ -21,8 +23,9 @@ const pool = new Pool({
     // ssl: useSSL
 });
 const waiterRoute = routesFact(pool);
-
-app.engine('handlebars', exphbs({ defaultLayout: 'main' }));
+const waiterFact = WaitersFactory(pool);
+const helpers = Helpers(waiterFact);
+app.engine('handlebars', exphbs({ defaultLayout: 'main', helpers }));
 app.set('view engine', 'handlebars');
 
 
@@ -50,6 +53,8 @@ app.get('/waiters/:username', waiterRoute.waiterLog);
 app.post('/logout', function (req, res){
     res.redirect('/');
 });
+
+app.post('/reset',waiterRoute.resetWaiter)
 
 const PORT = process.env.PORT || 8080;
 
