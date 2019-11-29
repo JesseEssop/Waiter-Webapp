@@ -33,6 +33,7 @@ module.exports = function waiterWork(pool) {
     }
 
     function currentWaiter() {
+
         return loggedIn;
     }
 
