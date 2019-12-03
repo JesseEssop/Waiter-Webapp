@@ -24,9 +24,9 @@ module.exports = function WaiterRoute(pool) {
         if (user.length === 0) {
             req.flash('error1', 'PLEASE ENTER A NAME')
             res.redirect('/')
-        } 
+        }
         else {
-            await waiting.waiterName(user) 
+            await waiting.waiterName(user)
             res.redirect('/waiters');
         }
     }
@@ -42,16 +42,14 @@ module.exports = function WaiterRoute(pool) {
             FRI: fri,
             SAT: sat,
             SUN: sun,
-            // levelMon: f,
-            // levelTues: f,
-            // levelWed: f,
-            // levelThurs: f,
-            // levelFri: f,
-            // levelSat: f,
-            // levelSun: f
+            levelMon: waiting.LevelDay1(),
+            levelTues: waiting.LevelDay2(),
+            levelWed: waiting.LevelDay3(),
+            levelThurs: waiting.LevelDay4(),
+            levelFri: waiting.LevelDay5(),
+            levelSat: waiting.LevelDay6(),
+            levelSun: waiting.LevelDay7(),
             everyday: await waiting.Alldays()
-
-
         })
     }
 
@@ -62,14 +60,30 @@ module.exports = function WaiterRoute(pool) {
         await waiting.workDays(week);
         workDays = waiting.Ontime()
         // console.log(workDays)
-
-        for (var w = 0; w < workDays.length; w++) {
-            var allworkDays = workDays[w];
-
-            if (mon >= 3 || tues >= 3 || wed >= 3 || thurs >= 3 || fri >= 3 || sat >= 3 || sun >= 3) {
-                req.flash('error', 'SHIFTS FOR SELECTED DAYS ARE FULL, PLEASE SELECT DIFFERENT DAYS')
-            }
-            else {
+        if (mon >= 3) {
+            req.flash('error', waiting.MsgError())
+        }
+        if (tues >= 3) {
+            req.flash('error', waiting.MsgError())
+        }
+        if (wed >= 3) {
+            req.flash('error', waiting.MsgError())
+        }
+        if (thurs >= 3) {
+            req.flash('error', waiting.MsgError())
+        }
+        if (fri >= 3) {
+            req.flash('error', waiting.MsgError())
+        }
+        if (sat >= 3) {
+            req.flash('error', waiting.MsgError())
+        }
+        if (sun >= 3) {
+            req.flash('error', waiting.MsgError())
+        }
+        else {
+            for (var w = 0; w < workDays.length; w++) {
+                var allworkDays = workDays[w];
                 mon = allworkDays.monday
                 tues = allworkDays.tuesday
                 wed = allworkDays.wednesday
@@ -77,8 +91,10 @@ module.exports = function WaiterRoute(pool) {
                 fri = allworkDays.friday
                 sat = allworkDays.saturday
                 sun = allworkDays.sunday
+
             }
         }
+
         res.redirect('/waiters')
     }
 

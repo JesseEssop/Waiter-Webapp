@@ -22,12 +22,12 @@
 
     {{!-- <div class="col-12 center"> --}}
     <table>
-        <tr style="background:orange">
+        <tr style="background:black">
             {{#each workerDays}}
             <th>{{day}}</th>
             {{/each}}
         </tr>
-        <tr style="background:orange">
+        <tr style="background:black">
             {{#each workerDays}}
             <td>
                 {{#each waiters}}
@@ -39,6 +39,7 @@
             {{/each}}
         </tr>
     </table>
+    
 <form action="/reset" method="POST">
 <button type="submit" style="margin: 15px; color:rgb(0, 0, 0)">Reset Week</button>
 </form>

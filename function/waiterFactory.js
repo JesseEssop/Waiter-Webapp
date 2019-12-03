@@ -20,6 +20,8 @@ module.exports = function waiterWork(pool) {
 
     var shiftsMap = {}
 
+    var errorMsg;
+
 
     async function waiterName(waiter) {
 
@@ -27,13 +29,13 @@ module.exports = function waiterWork(pool) {
             var allwaiters = await pool.query('SELECT * FROM waiters WHERE waitername = $1', [newWaiter])
             if (allwaiters.rows.length === 0) {
                 await pool.query('insert into waiters (waitername) values ($1)', [newWaiter]);
-                loggedIn = newWaiter;
             }
+            loggedIn = newWaiter;
         }
     }
 
     function currentWaiter() {
-
+        console.log(loggedIn)
         return loggedIn;
     }
 
@@ -46,13 +48,14 @@ module.exports = function waiterWork(pool) {
         return newWaiter
     }
 
-    function shiftMapUpdater(day){
+    function shiftMapUpdater(day) {
         if (shiftsMap[newWaiter] === undefined) {
             shiftsMap[newWaiter] = [day];
         } else {
             let list = shiftsMap[newWaiter];
             list.push(day);
             shiftsMap[newWaiter] = list;
+
         }
     }
 
@@ -63,44 +66,79 @@ module.exports = function waiterWork(pool) {
             if (day[i] === 'Monday') {
                 await pool.query('insert into shifts (waiter_id, day_id) values ($1, $2)', [oneWaiter.rows[0].id, 1])
                 checkWaiter = await pool.query('SELECT weekdays.days, waiters.waitername FROM shifts INNER JOIN weekdays ON weekdays.id = shifts.day_id INNER JOIN waiters ON waiters.id = shifts.waiter_id')
-                monday = 1
-                shiftMapUpdater('Monday');
+                
+                if (monday >= 3) {
+                    errorMsg = "Monday's shifts are full"
+                } else {
+                    monday += 1
+                    shiftMapUpdater('Monday');
+                }
             }
             if (day[i] === 'Tuesday') {
                 await pool.query('insert into shifts (waiter_id, day_id) values ($1, $2)', [oneWaiter.rows[0].id, 2])
                 checkWaiter = await pool.query('SELECT weekdays.days, waiters.waitername FROM shifts INNER JOIN weekdays ON weekdays.id = shifts.day_id INNER JOIN waiters ON waiters.id = shifts.waiter_id')
-                tuesday = 1
-                shiftMapUpdater('Tuesday');
+                
+                if (tuesday >= 3) {
+                    errorMsg = "Tuesday's shifts are full"
+                } else {
+                    tuesday += 1
+                    shiftMapUpdater('Tuesday');
+                }
             }
             if (day[i] === 'Wednesday') {
                 await pool.query('insert into shifts (waiter_id, day_id) values ($1, $2)', [oneWaiter.rows[0].id, 3])
                 checkWaiter = await pool.query('SELECT weekdays.days, waiters.waitername FROM shifts INNER JOIN weekdays ON weekdays.id = shifts.day_id INNER JOIN waiters ON waiters.id = shifts.waiter_id')
-                wednesday = 1
-                shiftMapUpdater('Wednesday');
+                
+                if (wednesday >= 3) {
+                    errorMsg = "Wednesday's shifts are full"
+                } else {
+                    wednesday += 1
+                    shiftMapUpdater('Wednesday');
+                }
             }
             if (day[i] === 'Thursday') {
                 await pool.query('insert into shifts (waiter_id, day_id) values ($1, $2)', [oneWaiter.rows[0].id, 4])
                 checkWaiter = await pool.query('SELECT weekdays.days, waiters.waitername FROM shifts INNER JOIN weekdays ON weekdays.id = shifts.day_id INNER JOIN waiters ON waiters.id = shifts.waiter_id')
-                thursday = 1
-                shiftMapUpdater('Thursday');
+                
+                if (thursday >= 3) {
+                    errorMsg = "Thursday's shifts are full"
+                } else {
+                    thursday += 1
+                    shiftMapUpdater('Thursday');
+                }
             }
             if (day[i] === 'Friday') {
                 await pool.query('insert into shifts (waiter_id, day_id) values ($1, $2)', [oneWaiter.rows[0].id, 5])
                 checkWaiter = await pool.query('SELECT weekdays.days, waiters.waitername FROM shifts INNER JOIN weekdays ON weekdays.id = shifts.day_id INNER JOIN waiters ON waiters.id = shifts.waiter_id')
-                friday = 1
-                shiftMapUpdater('Friday');
+                
+                if (friday >= 3) {
+                    errorMsg = "Friday's shifts are full"
+                } else {
+                    friday += 1
+                    shiftMapUpdater('Friday');
+                }
             }
             if (day[i] === 'Saturday') {
                 await pool.query('insert into shifts (waiter_id, day_id) values ($1, $2)', [oneWaiter.rows[0].id, 6])
                 checkWaiter = await pool.query('SELECT weekdays.days, waiters.waitername FROM shifts INNER JOIN weekdays ON weekdays.id = shifts.day_id INNER JOIN waiters ON waiters.id = shifts.waiter_id')
-                saturday = 1
-                shiftMapUpdater('Saturday');
+                
+                if (saturday >= 3) {
+                    errorMsg = "Saturday's shifts are full"
+                } else {
+                    saturday += 1
+                    shiftMapUpdater('Saturday');
+                }
             }
             if (day[i] === 'Sunday') {
                 await pool.query('insert into shifts (waiter_id, day_id) values ($1, $2)', [oneWaiter.rows[0].id, 7])
                 checkWaiter = await pool.query('SELECT weekdays.days, waiters.waitername FROM shifts INNER JOIN weekdays ON weekdays.id = shifts.day_id INNER JOIN waiters ON waiters.id = shifts.waiter_id')
-                sunday = 1
-                shiftMapUpdater('Sunday');
+                
+                if (sunday >= 3) {
+                    errorMsg = "Sunday's shifts are full"
+                } else {
+                    sunday += 1
+                    shiftMapUpdater('Sunday');
+                }
             }
         }
 
@@ -114,6 +152,7 @@ module.exports = function waiterWork(pool) {
             sunday
         };
         workWeek.push(workDays);
+
     }
 
     function Ontime() {
@@ -122,6 +161,7 @@ module.exports = function waiterWork(pool) {
 
     async function WaiterDays() {
         checkWaiter = await pool.query('SELECT weekdays.days, waiters.waitername FROM shifts INNER JOIN weekdays ON weekdays.id = shifts.day_id INNER JOIN waiters ON waiters.id = shifts.waiter_id')
+
         return checkWaiter.rows
     }
 
@@ -141,42 +181,76 @@ module.exports = function waiterWork(pool) {
                 }
             }
         }
+
         return orderedData;
     }
 
-    async function LevelDay() {
-        let orderedData = await orderData();
-        if (orderedData[0].waiters >= 3) {
+    function LevelDay1() {
+        if (monday >= 3) {
             return "danger"
         }
+        else {
+            return "safe"
+        }
+    }
 
-        if (orderedData[1].waiters >= 3) {
+    function LevelDay2() {
+        if (tuesday >= 3) {
             return "danger"
         }
+        else {
+            return "safe"
+        }
+    }
 
-        if (orderedData[2].waiters >= 3) {
+    function LevelDay3() {
+        if (wednesday >= 3) {
             return "danger"
         }
+        else {
+            return "safe"
+        }
+    }
 
-        if (orderedData[3].waiters >= 3) {
+    function LevelDay4() {
+        if (thursday >= 3) {
             return "danger"
         }
+        else {
+            return "safe"
+        }
+    }
 
-        if (orderedData[4].waiters >= 3) {
+    function LevelDay5() {
+        if (friday >= 3) {
             return "danger"
         }
+        else {
+            return "safe"
+        }
+    }
 
-        if (orderedData[5].waiters >= 3) {
+    function LevelDay6() {
+        if (saturday >= 3) {
             return "danger"
         }
+        else {
+            return "safe"
+        }
+    }
 
-        if (orderedData[6].waiters >= 3) {
+    function LevelDay7() {
+        if (sunday >= 3) {
             return "danger"
+        }
+        else {
+            return "safe"
         }
     }
 
     function waiterInfo(username) {
         let list = shiftsMap[username];
+        console.log(list)
         return list;
     };
 
@@ -191,6 +265,10 @@ module.exports = function waiterWork(pool) {
         shiftsMap = {};
     }
 
+    function MsgError (){
+        return errorMsg
+    }
+
     return {
         orderData,
         waiterName,
@@ -199,9 +277,17 @@ module.exports = function waiterWork(pool) {
         workDays,
         Ontime,
         WaiterDays,
-        LevelDay,
+        LevelDay1,
+        LevelDay2,
+        LevelDay3,
+        LevelDay4,
+        LevelDay5,
+        LevelDay6,
+        LevelDay7,
         resetWaiters,
         waiterInfo,
-        Alldays
+        Alldays,
+        MsgError
+        
     }
 }

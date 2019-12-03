@@ -253,13 +253,22 @@ p {
     max-width: 60rem;
   }
 }
-.li{
-  float: left
-}
+
 .error{
   color:red;
   font-size: 20px
 }
+
+.safe{
+  background:orange;
+}
 .danger{
   background: green;
+}
+
+.workdays{
+  float:left;
+  width:100px;  
+  padding-left:0px; 
+  margin-left:15px
 }

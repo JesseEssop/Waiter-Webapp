@@ -17,68 +17,79 @@
                 <h3>Select days to work:</h3>
                 <div class="row col-12">
                         {{#each everyday}}
-                        {{#if (checkDays ../username this.days ../days)}}
+                        {{#if (checkDays this.days ../days)}}
                         <ul style="float:left;padding-left: 0px; margin-left: 20px"><label
-                                        style="color:rgb(255, 255, 255); font-size: 17px">{{this.days}}<input type="checkbox"
-                                                name="weekdays" value="{{this.days}}" checked><span class="checkmark"></span></label>
+                                        style="color:rgb(255, 255, 255); font-size: 17px">{{this.days}}<input
+                                                type="checkbox" name="weekdays" value="{{this.days}}" checked><span
+                                                class="checkmark"></span></label>
                         </ul>
                         {{else}}
                         <ul style="float:left;padding-left: 0px; margin-left: 20px"><label
-                                        style="color:rgb(255, 255, 255); font-size: 17px">{{this.days}}<input type="checkbox"
-                                                name="weekdays" value="{{this.days}}"><span class="checkmark"></span></label>
+                                        style="color:rgb(255, 255, 255); font-size: 17px">{{this.days}}<input
+                                                type="checkbox" name="weekdays" value="{{this.days}}"><span
+                                                class="checkmark"></span></label>
                         </ul>
                         {{/if}}
                         {{/each}}
 
+                </div>
+                <div>
                         <button class="confirmBtn" type="submit" name="confirm"
                                 style="margin: 15px; color:rgb(0, 0, 0)">CONFIRM</button>
                 </div>
+
         </form>
 
         <div class="row">
                 <div class="center">
-                        <ul class="{{levelMon}}"
-                                style="float:left; width:100px; background:orange; padding-left:0px; margin-left:40px">
+                        <div class="workdays {{levelMon}}">
                                 <u>Monday</u>
                                 <br>
                                 waiters: {{MON}}
-                        </ul>
-                        <ul class="{{levelTues}}"
-                                style="float:left; width:100px; background:orange; padding-left:0px; margin-left:30px">
+                        </div>
+
+
+                        <div class="workdays {{levelTues}}">
                                 <u>Tuesday</u>
                                 <br>
                                 waiters: {{TUES}}
-                        </ul>
-                        <ul class="{{levelWed}}"
-                                style="float:left; width:100px; background:orange; padding-left:0px; margin-left:30px">
+                        </div>
+
+
+
+                        <div class="workdays {{levelWed}}">
                                 <u>Wednesday</u>
                                 <br>
                                 waiters: {{WED}}
-                        </ul>
-                        <ul class="{{levelThurs}}"
-                                style="float:left; width:100px; background:orange; padding-left:0px; margin-left:30px">
+                        </div>
+
+
+
+                        <div class="workdays {{levelThurs}}">
                                 <u>Thursday</u>
                                 <br>
                                 waiters: {{THURS}}
-                        </ul>
-                        <ul class="{{levelFri}}"
-                                style="float:left; width:100px; background:orange; padding-left:0px; margin-left:30px">
+                        </div>
+
+
+                        <div class="workdays {{levelFri}}">
                                 <u>Friday</u>
                                 <br>
                                 waiters: {{FRI}}
-                        </ul>
-                        <ul class="{{levelSat}}"
-                                style="float:left; width:100px; background:orange; padding-left:0px; margin-left:30px">
+                        </div>
+
+                        <div class="workdays {{levelSat}}">
                                 <u>Saturday</u>
                                 <br>
                                 waiters: {{SAT}}
-                        </ul>
-                        <ul class="{{levelSun}}"
-                                style="float:left; width:100px; background:orange; padding-left:0px; margin-left:30px">
+                        </div>
+
+                        <div class="workdays {{levelSun}}">
                                 <u>Sunday</u>
                                 <br>
                                 waiters: {{SUN}}
-                        </ul>
+                        </div>
+
                 </div>
         </div>
 </div>
