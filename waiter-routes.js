@@ -64,7 +64,7 @@ module.exports = function WaiterRoute(pool) {
             req.flash('error', "Monday's shifts are full")
         }
         if (tues >= 3) {
-            req.flash('error', "Tuesday's shifts are full")
+            req.flash('error', " Tuesday's shifts are full")
         }
         if (wed >= 3) {
             req.flash('error', "Wednesday's shifts are full")
