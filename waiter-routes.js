@@ -61,25 +61,25 @@ module.exports = function WaiterRoute(pool) {
         workDays = waiting.Ontime()
         // console.log(workDays)
         if (mon >= 3) {
-            req.flash('error', waiting.MsgError())
+            req.flash('error', "Monday's shifts are full")
         }
         if (tues >= 3) {
-            req.flash('error', waiting.MsgError())
+            req.flash('error', "Tuesday's shifts are full")
         }
         if (wed >= 3) {
-            req.flash('error', waiting.MsgError())
+            req.flash('error', "Wednesday's shifts are full")
         }
         if (thurs >= 3) {
-            req.flash('error', waiting.MsgError())
+            req.flash('error', "Thursday's shifts are full")
         }
         if (fri >= 3) {
-            req.flash('error', waiting.MsgError())
+            req.flash('error', "Friday's shifts are full")
         }
         if (sat >= 3) {
-            req.flash('error', waiting.MsgError())
+            req.flash('error', "Saturday's shifts are full")
         }
         if (sun >= 3) {
-            req.flash('error', waiting.MsgError())
+            req.flash('error', "Sunday's shifts are full")
         }
         else {
             for (var w = 0; w < workDays.length; w++) {
